@@ -1,0 +1,9 @@
+# github.com/go-chi/chi/v5 v5.0.7
+github.com/go-chi/chi/v5
+github.com/go-chi/chi/v5/middleware
+# github.com/joho/godotenv v1.4.0
+github.com/joho/godotenv
+# github.com/psinthorn/cre8 v0.0.0-20220322013407-5dd950383b41 => ../cre8
+## explicit
+github.com/psinthorn/cre8
+# github.com/psinthorn/cre8 => ../cre8

@@ -16,3 +16,21 @@ func (c *Cre8) createFolderIfNotExist(folderPath string) error {
 
 	return nil
 }
+
+func (c *Cre8) createFileIfNotExists(filePath string) error {
+	// check stat
+	var _, err = os.Stat(filePath)
+	if os.IsNotExist(err) {
+		// create file
+		file, err := os.Create(filePath)
+		if err != nil {
+			return err
+		}
+
+		defer func(file *os.File) {
+			_ = file.Close()
+		}(file)
+	}
+
+	return nil
+}
