@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
+	"github.com/psinthorn/cre8/render"
 )
 
 const version = "1.0.0"
@@ -49,6 +50,8 @@ func (c *Cre8) New(rootPath string) error {
 		renderer: os.Getenv("RENDERER"),
 	}
 
+	c.createRender()
+
 	return nil
 }
 
@@ -67,7 +70,7 @@ func (c *Cre8) ListenAndServe() {
 	serv := &http.Server{
 		Addr:         fmt.Sprintf(":%s", os.Getenv("PORT")),
 		ErrorLog:     c.ErrorLog,
-		Handler:      c.routes(),
+		Handler:      c.Routes,
 		IdleTimeout:  30 * time.Second,
 		ReadTimeout:  30 * time.Second,
 		WriteTimeout: 600 * time.Second,
@@ -95,4 +98,14 @@ func (c *Cre8) startLoggers() (*log.Logger, *log.Logger) {
 	errorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	return infoLog, errorLog
+}
+
+func (c *Cre8) createRender() {
+	pageRender := render.Render{
+		Port:     c.config.port,
+		Renderer: c.config.renderer,
+		RootPath: c.RootPath,
+	}
+
+	c.Render = &pageRender
 }
