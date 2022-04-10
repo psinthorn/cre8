@@ -1,9 +1,14 @@
 package main
 
-import "github.com/psinthorn/cre8"
+import (
+	"app/handlers"
+
+	"github.com/psinthorn/cre8"
+)
 
 type application struct {
-	App *cre8.Cre8
+	App      *cre8.Cre8
+	Handlers *handlers.Handlers
 }
 
 func main() {

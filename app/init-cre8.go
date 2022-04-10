@@ -1,6 +1,7 @@
 package main
 
 import (
+	"app/handlers"
 	"log"
 	"os"
 
@@ -25,11 +26,17 @@ func initApplication() *application {
 	}
 
 	cre8.AppName = "app"
-	cre8.InfoLog.Println("Debug is set to: ", cre8.Debug)
-
-	app := &application{
+	appHandlers := &handlers.Handlers{
 		App: cre8,
 	}
+
+	app := &application{
+		App:      cre8,
+		Handlers: appHandlers,
+	}
+
+	// เพื่อให้ cre8 รู้จัก routes ที่เราสร้างขึ้นมา
+	app.App.Routes = app.routes()
 
 	return app
 }
