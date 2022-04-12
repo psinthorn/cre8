@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/CloudyKit/jet/v6"
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
 	"github.com/psinthorn/cre8/render"
@@ -50,6 +51,11 @@ func (c *Cre8) New(rootPath string) error {
 		renderer: os.Getenv("RENDERER"),
 	}
 
+	views := jet.NewSet(
+		jet.NewOSFileSystemLoader(fmt.Sprintf("%s/views", rootPath)),
+		jet.InDevelopmentMode(),
+	)
+	c.JetViews = views
 	c.createRender()
 
 	return nil
@@ -105,6 +111,7 @@ func (c *Cre8) createRender() {
 		Port:     c.config.port,
 		Renderer: c.config.renderer,
 		RootPath: c.RootPath,
+		JetViews: c.JetViews,
 	}
 
 	c.Render = &pageRender

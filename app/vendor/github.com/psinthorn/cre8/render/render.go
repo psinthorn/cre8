@@ -3,8 +3,11 @@ package render
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"strings"
+
+	"github.com/CloudyKit/jet/v6"
 )
 
 // Render struct เพื่อเก็บค่าต่างๆ ที่สำคัญที่ต้องกำหนดและใช้ในการ Render
@@ -14,6 +17,7 @@ type Render struct {
 	Secure     bool
 	Port       string
 	ServerName string
+	JetViews   *jet.Set
 }
 
 // TemplateData ใช้เพื่อรับค่าต่างๆ ที่ต้องการใช้ในเทมเพลท
@@ -31,12 +35,12 @@ type TemplateData struct {
 
 // PageTmpl check what is template engine you choose
 // เพื่อตรวจสอบว่าใช้ เทมเพลทเอนจิ้นอะไร เช่น go หรือ jet
-func (rd *Render) PageTmpl(w http.ResponseWriter, r *http.Request, view string, varialbes, data interface{}) error {
+func (rd *Render) PageTmpl(w http.ResponseWriter, r *http.Request, view string, variables, data interface{}) error {
 	switch strings.ToLower(rd.Renderer) {
 	case "go":
 		return rd.GoTmpl(w, r, view, data)
 	case "jet":
-		return rd.JetTmpl(w, r, view, data)
+		return rd.JetTmpl(w, r, view, variables, data)
 	}
 	return nil
 }
@@ -64,7 +68,33 @@ func (rd *Render) GoTmpl(w http.ResponseWriter, r *http.Request, view string, da
 	return nil
 }
 
-func (rd *Render) JetTmpl(w http.ResponseWriter, r *http.Request, view string, data interface{}) error {
+func (rd *Render) JetTmpl(w http.ResponseWriter, r *http.Request, view string, variables, data interface{}) error {
+	var vars jet.VarMap
+	// ประกาศตัวแปร vars โดยมี type เป็น jet.VarMap หากไม่เป็น type jet.VarMap จะไม่สามารถใช้ตัวแปรได้บน JetTemplate (เป็นข้อกำหนดของ JetTemplate)
+	//
+	if variables == nil {
+		// หากไม่มีข้อมูลให้สร้างข้อมูลเปล่าขึ้นมาโดยกำหนดให้เป็น jet.VarMap type
+		vars = make(jet.VarMap)
+	} else {
+		// หาก variables มีข้อมูลให้ทำการแปลงข้อมูลให้อยู่ในรูปแบบข้อมูล jet.VarMap type
+		vars = variables.(jet.VarMap)
+	}
+
+	td := &TemplateData{}
+	if data != nil {
+		td = data.(*TemplateData)
+	}
+
+	t, err := rd.JetViews.GetTemplate(fmt.Sprintf("%s.jet", view))
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	if err := t.Execute(w, vars, td); err != nil {
+		log.Println(err)
+		return err
+	}
 
 	return nil
 }
