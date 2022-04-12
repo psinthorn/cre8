@@ -1,0 +1,21 @@
+{{extends "./layouts/base.jet"}}
+{{block browserTitle()}}Cre8 Engine{{end}}
+
+{{block css()}}
+{{end}}
+
+{{block pageContent()}}
+    <div class="col text-center">
+            <div class="d-flex align-items-center justify-content-center" style="height: 100vh;">
+                <div>
+                    <img src="/public/images/celeritas.jpg" class="mb-5" style="width: 100px;height:auto;">
+                    <h1>Cre8 (Jet Templates)</h1>
+                    <hr>
+                    <small class="text-muted">Build on the Go</small>
+                </div>
+            </div>
+    </div>
+{{end}}
+
+{{block js()}}
+{{end}}

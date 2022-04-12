@@ -3,6 +3,7 @@ package cre8
 import (
 	"log"
 
+	"github.com/CloudyKit/jet/v6"
 	"github.com/go-chi/chi/v5"
 	"github.com/psinthorn/cre8/render"
 )
@@ -15,6 +16,7 @@ type Cre8 struct {
 	InfoLog  *log.Logger
 	RootPath string
 	Render   *render.Render
+	JetViews *jet.Set
 	Routes   *chi.Mux
 	config   config
 }
